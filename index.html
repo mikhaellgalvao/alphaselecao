@@ -6,7 +6,7 @@
     <title>Inscrição para Temporada Omegaverso</title>
     <style>
         /* Importa uma fonte com estilo gamer */
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 
         /* Estilos gerais do corpo da página */
         body {
@@ -41,10 +41,22 @@
         /* Título do formulário */
         h1 {
             color: #00FFFF;
-            margin-bottom: 15px;
-            font-size: 2.2em;
+            margin-bottom: 5px;
+            font-size: 1.8em; /* Tamanho ajustado */
             text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF;
             font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        /* Subtítulo ALPHA */
+        h1 .subtitle {
+            display: block;
+            font-size: 1.2em; /* Maior que o h1 principal */
+            color: #FF6347; /* Cor laranja/vermelho para destaque */
+            font-weight: 900; /* Mais forte */
+            text-shadow: 0 0 8px #FF4500;
+            letter-spacing: 2px;
+            margin-top: 5px;
         }
         
         /* Parágrafo de instrução */
@@ -96,6 +108,7 @@
         select:disabled {
             background-color: rgba(0,0,0,0.2);
             cursor: not-allowed;
+            opacity: 0.5;
         }
 
         /* Efeito de foco nos campos de entrada e no select */
@@ -131,19 +144,19 @@
             color: #FFF;
         }
         
-        /* Estilização dos checkboxes de modo de jogo */
-        .gamemode-selector {
+        /* Estilização dos checkboxes */
+        .checkbox-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-        .gamemode-selector div {
+        .checkbox-selector div {
             position: relative;
         }
-        .gamemode-selector input[type="checkbox"] {
+        .checkbox-selector input[type="checkbox"] {
             display: none; /* Esconde o checkbox padrão */
         }
-        .gamemode-selector label {
+        .checkbox-selector label {
             display: block;
             padding: 10px 10px 10px 35px;
             border: 2px solid #8E44AD;
@@ -153,7 +166,7 @@
             position: relative;
             margin-bottom: 0;
         }
-        .gamemode-selector label::before {
+        .checkbox-selector label::before {
             content: '';
             position: absolute;
             left: 10px;
@@ -165,7 +178,7 @@
             border-radius: 4px;
             transition: all 0.3s ease;
         }
-        .gamemode-selector label::after {
+        .checkbox-selector label::after {
             content: '✓';
             position: absolute;
             left: 13px;
@@ -175,15 +188,15 @@
             color: #00FFFF;
             transition: all 0.3s ease;
         }
-        .gamemode-selector input[type="checkbox"]:checked + label {
+        .checkbox-selector input[type="checkbox"]:checked + label {
             background-color: rgba(142, 68, 173, 0.3);
             border-color: #00FFFF;
         }
-        .gamemode-selector input[type="checkbox"]:checked + label::before {
+        .checkbox-selector input[type="checkbox"]:checked + label::before {
             background-color: #00FFFF;
             border-color: #00FFFF;
         }
-        .gamemode-selector input[type="checkbox"]:checked + label::after {
+        .checkbox-selector input[type="checkbox"]:checked + label::after {
             transform: translateY(-50%) scale(1);
         }
 
@@ -225,7 +238,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Temporada Omegaverso</h1>
+        <h1>TEMPORADA OMEGAVERSO <span class="subtitle">ALPHA</span></h1>
         <p class="intro-text">Insira seus dados para confirmar sua disponibilidade e entrar na arena!</p>
         
         <form id="formInscricao">
@@ -248,16 +261,23 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="horarioDisponivel">Escolha o melhor horário:</label>
+            <div class="form-group" id="horario-select-group">
+                <label for="horarioDisponivel">Horário Preferencial:</label>
                 <select id="horarioDisponivel" name="horarioDisponivel" required disabled>
                     <option value="" disabled selected>Escolha um dia primeiro</option>
                 </select>
             </div>
+
+            <div class="form-group checkbox-selector" style="grid-template-columns: 1fr;">
+                 <div>
+                    <input type="checkbox" id="horarioFlexivel" name="horarioFlexivel">
+                    <label for="horarioFlexivel">Sou flexível neste dia</label>
+                </div>
+            </div>
             
             <div class="form-group">
                 <label>Modos de jogo preferidos:</label>
-                <div class="gamemode-selector">
+                <div class="checkbox-selector">
                     <div>
                         <input type="checkbox" id="dupla" name="gamemode" value="Dupla">
                         <label for="dupla">Dupla</label>
@@ -289,18 +309,19 @@
 
     <script>
         // Elementos do DOM
-        const diaRadios = document.querySelectorAll('input[name="dia"]');
-        const horarioSelect = document.getElementById('horarioDisponivel');
         const form = document.getElementById('formInscricao');
         const introText = document.querySelector('.intro-text');
         const confirmationMessage = document.getElementById('mensagemConfirmacao');
+        const horarioFlexivelCheckbox = document.getElementById('horarioFlexivel');
+        const diaRadios = document.querySelectorAll('input[name="dia"]');
+        const horarioSelect = document.getElementById('horarioDisponivel');
 
         // Gera a lista de horários
         const horarios = [];
         let hora = 14;
         let minuto = 0;
-        while (hora < 22) {
-            const horaFormatada = String(hora).padStart(2, '0');
+        while (hora < 24 || (hora === 24 && minuto === 0)) {
+            const horaFormatada = String(hora === 24 ? 0 : hora).padStart(2, '0');
             const minutoFormatado = String(minuto).padStart(2, '0');
             horarios.push(`${horaFormatada}:${minutoFormatado}`);
             
@@ -340,7 +361,11 @@
             // Pega os valores dos campos do formulário
             const nomeCompleto = document.getElementById('nomeCompleto').value;
             const nickname = document.getElementById('nickname').value;
-            const horarioDisponivel = document.getElementById('horarioDisponivel').value;
+            
+            let horarioFinal = horarioSelect.value;
+            if (horarioFlexivelCheckbox.checked) {
+                horarioFinal += " (Flexível)";
+            }
             
             // Coleta os modos de jogo selecionados
             const modosSelecionados = [];
@@ -355,11 +380,11 @@
 
             // Formata a mensagem que será enviada
             const mensagem = `
-*-- Inscrição Temporada Omegaverso --* 🚀
+*-- TEMPORADA OMEGAVERSO - ALPHA --* 🚀
 
 *Nome:* ${nomeCompleto}
 *Nickname:* ${nickname}
-*Horário Escolhido:* ${horarioDisponivel}
+*Disponibilidade:* ${horarioFinal}
 *Modos Preferidos:* ${modosString}
 
 Pronto para a batalha! 🔥
