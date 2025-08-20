@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscrição para Temporada Omegaverso</title>
+    <style>
+        /* Importa uma fonte com estilo gamer */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        /* Estilos gerais do corpo da página */
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: #1a1a2e; /* Fundo azul escuro espacial */
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(22, 160, 133, 0.1), transparent 40%),
+                radial-gradient(circle at 75% 75%, rgba(142, 68, 173, 0.1), transparent 40%);
+            color: #e0e0e0; /* Cor do texto principal */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Container principal do formulário */
+        .container {
+            background-color: rgba(23, 32, 42, 0.85); /* Fundo semi-transparente */
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.5); /* Sombra ciano neon */
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid #00FFFF; /* Borda ciano neon */
+            backdrop-filter: blur(5px); /* Efeito de desfoque no fundo */
+        }
+
+        /* Título do formulário */
+        h1 {
+            color: #00FFFF;
+            margin-bottom: 15px;
+            font-size: 2.2em;
+            text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF;
+            font-weight: 700;
+        }
+        
+        /* Parágrafo de instrução */
+        .intro-text {
+            margin-bottom: 30px;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        /* Agrupamento de label e input */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        /* Estilo dos labels */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #FFF;
+            font-size: 1.1em;
+            font-weight: 400;
+        }
+
+        /* Estilo dos campos de entrada e do select */
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #8E44AD; /* Borda roxa */
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #FFF;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        select {
+             -webkit-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300FFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 0.65em auto;
+        }
+        
+        select:disabled {
+            background-color: rgba(0,0,0,0.2);
+            cursor: not-allowed;
+        }
+
+        /* Efeito de foco nos campos de entrada e no select */
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #00FFFF; /* Borda ciano ao focar */
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+        }
+        
+        /* Estilização dos botões de rádio para dias */
+        .day-selector {
+            display: flex;
+            gap: 10px;
+        }
+        .day-selector input[type="radio"] {
+            display: none; /* Esconde o rádio padrão */
+        }
+        .day-selector label {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #8E44AD;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 0;
+        }
+        .day-selector input[type="radio"]:checked + label {
+            background-color: #8E44AD;
+            border-color: #00FFFF;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            color: #FFF;
+        }
+        
+        /* Estilização dos checkboxes de modo de jogo */
+        .gamemode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .gamemode-selector div {
+            position: relative;
+        }
+        .gamemode-selector input[type="checkbox"] {
+            display: none; /* Esconde o checkbox padrão */
+        }
+        .gamemode-selector label {
+            display: block;
+            padding: 10px 10px 10px 35px;
+            border: 2px solid #8E44AD;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            margin-bottom: 0;
+        }
+        .gamemode-selector label::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            border: 2px solid #8E44AD;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .gamemode-selector label::after {
+            content: '✓';
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            font-size: 18px;
+            color: #00FFFF;
+            transition: all 0.3s ease;
+        }
+        .gamemode-selector input[type="checkbox"]:checked + label {
+            background-color: rgba(142, 68, 173, 0.3);
+            border-color: #00FFFF;
+        }
+        .gamemode-selector input[type="checkbox"]:checked + label::before {
+            background-color: #00FFFF;
+            border-color: #00FFFF;
+        }
+        .gamemode-selector input[type="checkbox"]:checked + label::after {
+            transform: translateY(-50%) scale(1);
+        }
+
+        /* Estilo do botão de envio */
+        button {
+            background: linear-gradient(45deg, #FF4500, #FF6347); /* Gradiente laranja/vermelho */
+            color: #FFF;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 69, 0, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Orbitron', sans-serif;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* Efeito hover no botão */
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 69, 0, 0.6);
+        }
+
+        /* Mensagem de confirmação (inicialmente oculta) */
+        #mensagemConfirmacao {
+            margin-top: 25px;
+            font-size: 1.2em;
+            color: #2ECC71; /* Verde para sucesso */
+            display: none;
+            font-weight: bold;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Temporada Omegaverso</h1>
+        <p class="intro-text">Insira seus dados para confirmar sua disponibilidade e entrar na arena!</p>
+        
+        <form id="formInscricao">
+            <div class="form-group">
+                <label for="nomeCompleto">Seu Nome:</label>
+                <input type="text" id="nomeCompleto" name="nomeCompleto" required placeholder="Digite seu nome completo">
+            </div>
+            <div class="form-group">
+                <label for="nickname">Seu Nickname no Jogo:</label>
+                <input type="text" id="nickname" name="nickname" required placeholder="Ex: Omega_Player123">
+            </div>
+            
+            <div class="form-group">
+                <label>Escolha o dia:</label>
+                <div class="day-selector">
+                    <input type="radio" id="sabado" name="dia" value="Sábado" required>
+                    <label for="sabado">Sábado</label>
+                    <input type="radio" id="domingo" name="dia" value="Domingo" required>
+                    <label for="domingo">Domingo</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="horarioDisponivel">Escolha o melhor horário:</label>
+                <select id="horarioDisponivel" name="horarioDisponivel" required disabled>
+                    <option value="" disabled selected>Escolha um dia primeiro</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Modos de jogo preferidos:</label>
+                <div class="gamemode-selector">
+                    <div>
+                        <input type="checkbox" id="dupla" name="gamemode" value="Dupla">
+                        <label for="dupla">Dupla</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="duelo" name="gamemode" value="Duelo">
+                        <label for="duelo">Duelo</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="basquete" name="gamemode" value="Basquete">
+                        <label for="basquete">Basquete</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="volei" name="gamemode" value="Vôlei">
+                        <label for="volei">Vôlei</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="heatseeker" name="gamemode" value="Heatseeker">
+                        <label for="heatseeker">Heatseeker</label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">Enviar Disponibilidade</button>
+        </form>
+        
+        <p id="mensagemConfirmacao"></p>
+    </div>
+
+    <script>
+        // Elementos do DOM
+        const diaRadios = document.querySelectorAll('input[name="dia"]');
+        const horarioSelect = document.getElementById('horarioDisponivel');
+        const form = document.getElementById('formInscricao');
+        const introText = document.querySelector('.intro-text');
+        const confirmationMessage = document.getElementById('mensagemConfirmacao');
+
+        // Gera a lista de horários
+        const horarios = [];
+        let hora = 14;
+        let minuto = 0;
+        while (hora < 22) {
+            const horaFormatada = String(hora).padStart(2, '0');
+            const minutoFormatado = String(minuto).padStart(2, '0');
+            horarios.push(`${horaFormatada}:${minutoFormatado}`);
+            
+            minuto += 20;
+            if (minuto >= 60) {
+                hora++;
+                minuto -= 60;
+            }
+        }
+
+        // Função para popular a caixa de seleção de horários
+        function popularHorarios(dia) {
+            horarioSelect.innerHTML = '<option value="" disabled selected>Selecione um horário</option>';
+            horarioSelect.disabled = false;
+
+            horarios.forEach(horario => {
+                const option = document.createElement('option');
+                option.value = `${dia} - ${horario}`;
+                option.textContent = horario;
+                horarioSelect.appendChild(option);
+            });
+        }
+
+        // Adiciona um listener para a mudança nos botões de rádio do dia
+        diaRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    popularHorarios(this.value);
+                }
+            });
+        });
+
+        // Adiciona um listener para o evento de submit do formulário
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            // Pega os valores dos campos do formulário
+            const nomeCompleto = document.getElementById('nomeCompleto').value;
+            const nickname = document.getElementById('nickname').value;
+            const horarioDisponivel = document.getElementById('horarioDisponivel').value;
+            
+            // Coleta os modos de jogo selecionados
+            const modosSelecionados = [];
+            const checkboxes = document.querySelectorAll('input[name="gamemode"]:checked');
+            checkboxes.forEach(checkbox => {
+                modosSelecionados.push(checkbox.value);
+            });
+            const modosString = modosSelecionados.length > 0 ? modosSelecionados.join(', ') : 'Nenhum';
+
+            // Número de telefone para o qual a mensagem será enviada
+            const numeroWhatsApp = '5562981080384';
+
+            // Formata a mensagem que será enviada
+            const mensagem = `
+*-- Inscrição Temporada Omegaverso --* 🚀
+
+*Nome:* ${nomeCompleto}
+*Nickname:* ${nickname}
+*Horário Escolhido:* ${horarioDisponivel}
+*Modos Preferidos:* ${modosString}
+
+Pronto para a batalha! 🔥
+            `.trim();
+
+            // Codifica a mensagem para ser usada em uma URL
+            const mensagemCodificada = encodeURIComponent(mensagem);
+
+            // Cria a URL do WhatsApp
+            const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensagemCodificada}`;
+
+            // Esconde o formulário e o texto de introdução
+            form.style.display = 'none';
+            introText.style.display = 'none';
+
+            // Exibe a mensagem de confirmação final
+            confirmationMessage.innerHTML = 'Inscrição confirmada com sucesso!<br>Boa sorte na arena! 🚀';
+            confirmationMessage.style.display = 'block';
+
+            // Redireciona para o WhatsApp após um pequeno atraso
+            setTimeout(() => {
+                window.open(urlWhatsApp, '_blank');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
