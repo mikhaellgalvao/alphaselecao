@@ -383,42 +383,35 @@
             });
         });
 
-        // Listener para o checkbox de "Ambos"
-        ambosCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                ataqueCheckbox.checked = false;
-                ataqueCheckbox.disabled = true;
-                defesaCheckbox.checked = false;
-                defesaCheckbox.disabled = true;
-            } else {
-                ataqueCheckbox.disabled = false;
-                defesaCheckbox.disabled = false;
-            }
-        });
+        // Listener único para os checkboxes de posição
+        posicaoCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // Checa o estado dos checkboxes
+                const ataqueMarcado = ataqueCheckbox.checked;
+                const defesaMarcada = defesaCheckbox.checked;
+                const ambosMarcado = ambosCheckbox.checked;
 
-        // Listener para os checkboxes de "Ataque" e "Defesa"
-        ataqueCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                ambosCheckbox.checked = false;
-                ambosCheckbox.disabled = true;
-            } else {
-                if (!defesaCheckbox.checked) {
-                    ambosCheckbox.disabled = false;
+                if (ataqueMarcado && defesaMarcada) {
+                    // Se Ataque e Defesa estiverem marcados
+                    ambosCheckbox.checked = true;
+                    ambosCheckbox.style.display = 'block'; // Oculta a opção de Ambos para não confundir
+                    ataqueCheckbox.checked = false; // Desmarca Ataque
+                    defesaCheckbox.checked = false; // Desmarca Defesa
+                    ataqueCheckbox.parentElement.style.display = 'none'; // Esconde Ataque
+                    defesaCheckbox.parentElement.style.display = 'none'; // Esconde Defesa
+                } else if (ambosMarcado) {
+                    // Se Ambos estiver marcado
+                    ataqueCheckbox.checked = false; // Desmarca Ataque
+                    defesaCheckbox.checked = false; // Desmarca Defesa
+                    ataqueCheckbox.parentElement.style.display = 'none'; // Esconde Ataque
+                    defesaCheckbox.parentElement.style.display = 'none'; // Esconde Defesa
+                } else {
+                    // Se nenhuma das condições acima for atendida, mostra todas as opções novamente
+                    ataqueCheckbox.parentElement.style.display = 'block';
+                    defesaCheckbox.parentElement.style.display = 'block';
                 }
-            }
+            });
         });
-
-        defesaCheckbox.addEventListener('change', function() {
-            if (this.checked) {
-                ambosCheckbox.checked = false;
-                ambosCheckbox.disabled = true;
-            } else {
-                if (!ataqueCheckbox.checked) {
-                    ambosCheckbox.disabled = false;
-                }
-            }
-        });
-
 
         // Adiciona um listener para o evento de submit do formulário
         form.addEventListener('submit', function(event) {
