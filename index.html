@@ -211,6 +211,11 @@
         .posicao-selector {
             grid-template-columns: 1fr 1fr 1fr;
         }
+        
+        /* Novo estilo para ocultar elementos */
+        .oculto {
+            display: none !important;
+        }
 
         /* Estilo do botão de envio */
         button {
@@ -290,15 +295,15 @@
             <div class="form-group">
                 <label>Posição preferida:</label>
                 <div class="checkbox-selector posicao-selector">
-                    <div>
+                    <div id="ataque-div">
                         <input type="checkbox" id="ataque" name="posicao" value="Ataque">
                         <label for="ataque">Ataque</label>
                     </div>
-                    <div>
+                    <div id="defesa-div">
                         <input type="checkbox" id="defesa" name="posicao" value="Defesa">
                         <label for="defesa">Defesa</label>
                     </div>
-                    <div>
+                    <div id="ambos-div">
                         <input type="checkbox" id="ambos" name="posicao" value="Ambos">
                         <label for="ambos">Ambos</label>
                     </div>
@@ -343,14 +348,16 @@
         const introText = document.querySelector('.intro-text');
         const confirmationMessage = document.getElementById('mensagemConfirmacao');
         const horarioFlexivelCheckbox = document.getElementById('horarioFlexivel');
-        const diaRadios = document.querySelectorAll('input [name="dia"]');
+        const diaRadios = document.querySelectorAll('input[name="dia"]');
         const horarioSelect = document.getElementById('horarioDisponivel');
         
         // Novos elementos para as posições
         const ataqueCheckbox = document.getElementById('ataque');
         const defesaCheckbox = document.getElementById('defesa');
         const ambosCheckbox = document.getElementById('ambos');
-        const posicaoCheckboxes = document.querySelectorAll('input [name="posicao"]');
+        const ataqueDiv = document.getElementById('ataque-div');
+        const defesaDiv = document.getElementById('defesa-div');
+        const ambosDiv = document.getElementById('ambos-div');
 
         // Gera a lista de horários
         const horarios = [];
@@ -390,38 +397,29 @@
             });
         });
 
-        // Listener único para os checkboxes de posição
-        posicaoCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                // Checa o estado dos checkboxes
-                const ataqueMarcado = ataqueCheckbox.checked;
-                const defesaMarcada = defesaCheckbox.checked;
-                const ambosMarcado = ambosCheckbox.checked;
+        // Adiciona um listener para as alterações nos checkboxes de posição
+        ataqueCheckbox.addEventListener('change', gerenciarPosicao);
+        defesaCheckbox.addEventListener('change', gerenciarPosicao);
+        ambosCheckbox.addEventListener('change', gerenciarPosicao);
 
-                if (ataqueMarcado && defesaMarcada) {
-                    // Se Ataque e Defesa estiverem marcados
-                    ambosCheckbox.checked = true;
-                    ambosCheckbox.parentElement.style.display = 'block';
-                    ataqueCheckbox.checked = false;
-                    defesaCheckbox.checked = false;
-                    ataqueCheckbox.parentElement.style.display = 'none';
-                    defesaCheckbox.parentElement.style.display = 'none';
-                } else if (ambosMarcado) {
-                    // Se Ambos estiver marcado
-                    ataqueCheckbox.checked = false;
-                    defesaCheckbox.checked = false;
-                    ataqueCheckbox.parentElement.style.display = 'none';
-                    defesaCheckbox.parentElement.style.display = 'none';
-                } else {
-                    // Se nenhuma das condições acima for atendida, mostra todas as opções novamente
-                    ataqueCheckbox.parentElement.style.display = 'block';
-                    defesaCheckbox.parentElement.style.display = 'block';
-                    ambosCheckbox.parentElement.style.display = 'block';
-                    ambosCheckbox.checked = false;
-                }
-            });
-        });
-
+        function gerenciarPosicao() {
+            if (ambosCheckbox.checked) {
+                ataqueCheckbox.checked = false;
+                defesaCheckbox.checked = false;
+                ataqueDiv.classList.add('oculto');
+                defesaDiv.classList.add('oculto');
+            } else if (ataqueCheckbox.checked || defesaCheckbox.checked) {
+                ambosCheckbox.checked = true;
+                ambosDiv.classList.remove('oculto');
+                ataqueDiv.classList.add('oculto');
+                defesaDiv.classList.add('oculto');
+            } else {
+                ataqueDiv.classList.remove('oculto');
+                defesaDiv.classList.remove('oculto');
+                ambosDiv.classList.remove('oculto');
+            }
+        }
+        
         // Adiciona um listener para o evento de submit do formulário
         form.addEventListener('submit', function(event) {
             event.preventDefault(); 
@@ -437,7 +435,7 @@
             
             // Coleta os modos de jogo selecionados
             const modosSelecionados = [];
-            const checkboxes = document.querySelectorAll('input [name="gamemode"]:checked');
+            const checkboxes = document.querySelectorAll('input[name="gamemode"]:checked');
             checkboxes.forEach(checkbox => {
                 modosSelecionados.push(checkbox.value);
             });
@@ -445,7 +443,7 @@
 
             // Coleta as posições selecionadas
             const posicoesSelecionadas = [];
-            const checkboxesPosicao = document.querySelectorAll('input [name="posicao"]:checked');
+            const checkboxesPosicao = document.querySelectorAll('input[name="posicao"]:checked');
             checkboxesPosicao.forEach(checkbox => {
                 posicoesSelecionadas.push(checkbox.value);
             });
