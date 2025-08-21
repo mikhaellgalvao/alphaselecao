@@ -403,20 +403,32 @@
         ambosCheckbox.addEventListener('change', gerenciarPosicao);
 
         function gerenciarPosicao() {
-            if (ambosCheckbox.checked) {
+            // Se "Ataque" e "Defesa" estiverem marcados, marca "Ambos" e desmarca os outros.
+            if (ataqueCheckbox.checked && defesaCheckbox.checked) {
+                ambosCheckbox.checked = true;
                 ataqueCheckbox.checked = false;
                 defesaCheckbox.checked = false;
-                ataqueDiv.classList.add('oculto');
-                defesaDiv.classList.add('oculto');
-            } else if (ataqueCheckbox.checked || defesaCheckbox.checked) {
-                ambosCheckbox.checked = true;
-                ambosDiv.classList.remove('oculto');
-                ataqueDiv.classList.add('oculto');
-                defesaDiv.classList.add('oculto');
-            } else {
-                ataqueDiv.classList.remove('oculto');
-                defesaDiv.classList.remove('oculto');
-                ambosDiv.classList.remove('oculto');
+                
+                // Oculta "Ataque" e "Defesa"
+                ataqueDiv.style.display = 'none';
+                defesaDiv.style.display = 'none';
+            } 
+            // Se "Ambos" for marcado, desmarca os outros e os oculta.
+            else if (ambosCheckbox.checked) {
+                ataqueCheckbox.checked = false;
+                defesaCheckbox.checked = false;
+
+                // Oculta "Ataque" e "Defesa"
+                ataqueDiv.style.display = 'none';
+                defesaDiv.style.display = 'none';
+            } 
+            // Se as opções "Ataque" ou "Defesa" forem desmarcadas
+            else if (!ataqueCheckbox.checked && !defesaCheckbox.checked) {
+                // Se o "Ambos" não estiver marcado, mostra todas as opções.
+                if (!ambosCheckbox.checked) {
+                    ataqueDiv.style.display = 'block';
+                    defesaDiv.style.display = 'block';
+                }
             }
         }
         
