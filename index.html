@@ -153,16 +153,9 @@
         .checkbox-selector div {
             position: relative;
         }
-        .checkbox-selector input {
-            appearance: none; /* Remove a aparência padrão do checkbox */
-            -webkit-appearance: none;
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            z-index: 1;
+        .checkbox-selector input[type="checkbox"] {
+            /* Esconde o checkbox real */
+            display: none;
         }
         .checkbox-selector label {
             display: block;
@@ -172,6 +165,7 @@
             position: relative;
             margin-bottom: 0;
             transition: background-color 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
         }
         .checkbox-selector label::before {
             content: '';
@@ -403,32 +397,17 @@
         ambosCheckbox.addEventListener('change', gerenciarPosicao);
 
         function gerenciarPosicao() {
-            // Se "Ataque" e "Defesa" estiverem marcados, marca "Ambos" e desmarca os outros.
+            // Se "Ambos" for selecionado, desmarca e oculta os outros
+            if (ambosCheckbox.checked) {
+                ataqueCheckbox.checked = false;
+                defesaCheckbox.checked = false;
+            }
+            
+            // Se "Ataque" e "Defesa" forem selecionados juntos, marca "Ambos" e desmarca os outros
             if (ataqueCheckbox.checked && defesaCheckbox.checked) {
                 ambosCheckbox.checked = true;
                 ataqueCheckbox.checked = false;
                 defesaCheckbox.checked = false;
-                
-                // Oculta "Ataque" e "Defesa"
-                ataqueDiv.style.display = 'none';
-                defesaDiv.style.display = 'none';
-            } 
-            // Se "Ambos" for marcado, desmarca os outros e os oculta.
-            else if (ambosCheckbox.checked) {
-                ataqueCheckbox.checked = false;
-                defesaCheckbox.checked = false;
-
-                // Oculta "Ataque" e "Defesa"
-                ataqueDiv.style.display = 'none';
-                defesaDiv.style.display = 'none';
-            } 
-            // Se as opções "Ataque" ou "Defesa" forem desmarcadas
-            else if (!ataqueCheckbox.checked && !defesaCheckbox.checked) {
-                // Se o "Ambos" não estiver marcado, mostra todas as opções.
-                if (!ambosCheckbox.checked) {
-                    ataqueDiv.style.display = 'block';
-                    defesaDiv.style.display = 'block';
-                }
             }
         }
         
