@@ -199,6 +199,11 @@
         .checkbox-selector input[type="checkbox"]:checked + label::after {
             transform: translateY(-50%) scale(1);
         }
+        
+        /* Estilo para a caixa de posições que usa 3 colunas */
+        .posicao-selector {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
 
         /* Estilo do botão de envio */
         button {
@@ -276,6 +281,24 @@
             </div>
             
             <div class="form-group">
+                <label>Posição preferida:</label>
+                <div class="checkbox-selector posicao-selector">
+                    <div>
+                        <input type="checkbox" id="ataque" name="posicao" value="Ataque">
+                        <label for="ataque">Ataque</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="defesa" name="posicao" value="Defesa">
+                        <label for="defesa">Defesa</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="ambos" name="posicao" value="Ambos">
+                        <label for="ambos">Ambos</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
                 <label>Modos de jogo preferidos:</label>
                 <div class="checkbox-selector">
                     <div>
@@ -315,6 +338,12 @@
         const horarioFlexivelCheckbox = document.getElementById('horarioFlexivel');
         const diaRadios = document.querySelectorAll('input[name="dia"]');
         const horarioSelect = document.getElementById('horarioDisponivel');
+        
+        // Novos elementos para as posições
+        const ataqueCheckbox = document.getElementById('ataque');
+        const defesaCheckbox = document.getElementById('defesa');
+        const ambosCheckbox = document.getElementById('ambos');
+        const posicaoCheckboxes = document.querySelectorAll('input[name="posicao"]');
 
         // Gera a lista de horários
         const horarios = [];
@@ -354,6 +383,43 @@
             });
         });
 
+        // Listener para o checkbox de "Ambos"
+        ambosCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                ataqueCheckbox.checked = false;
+                ataqueCheckbox.disabled = true;
+                defesaCheckbox.checked = false;
+                defesaCheckbox.disabled = true;
+            } else {
+                ataqueCheckbox.disabled = false;
+                defesaCheckbox.disabled = false;
+            }
+        });
+
+        // Listener para os checkboxes de "Ataque" e "Defesa"
+        ataqueCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                ambosCheckbox.checked = false;
+                ambosCheckbox.disabled = true;
+            } else {
+                if (!defesaCheckbox.checked) {
+                    ambosCheckbox.disabled = false;
+                }
+            }
+        });
+
+        defesaCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                ambosCheckbox.checked = false;
+                ambosCheckbox.disabled = true;
+            } else {
+                if (!ataqueCheckbox.checked) {
+                    ambosCheckbox.disabled = false;
+                }
+            }
+        });
+
+
         // Adiciona um listener para o evento de submit do formulário
         form.addEventListener('submit', function(event) {
             event.preventDefault(); 
@@ -375,6 +441,15 @@
             });
             const modosString = modosSelecionados.length > 0 ? modosSelecionados.join(', ') : 'Nenhum';
 
+            // Coleta as posições selecionadas
+            const posicoesSelecionadas = [];
+            const checkboxesPosicao = document.querySelectorAll('input[name="posicao"]:checked');
+            checkboxesPosicao.forEach(checkbox => {
+                posicoesSelecionadas.push(checkbox.value);
+            });
+            const posicoesString = posicoesSelecionadas.length > 0 ? posicoesSelecionadas.join(', ') : 'Não informou';
+
+
             // Número de telefone para o qual a mensagem será enviada
             const numeroWhatsApp = '5562981080384';
 
@@ -385,6 +460,7 @@
 *Nome:* ${nomeCompleto}
 *Nickname:* ${nickname}
 *Disponibilidade:* ${horarioFinal}
+*Posição Preferida:* ${posicoesString}
 *Modos Preferidos:* ${modosString}
 
 Pronto para a batalha! 🔥
