@@ -397,17 +397,28 @@
         ambosCheckbox.addEventListener('change', gerenciarPosicao);
 
         function gerenciarPosicao() {
-            // Se "Ambos" for selecionado, desmarca e oculta os outros
+            const ataqueMarcado = ataqueCheckbox.checked;
+            const defesaMarcada = defesaCheckbox.checked;
+
+            // Se "Ambos" for selecionado, oculta os outros
             if (ambosCheckbox.checked) {
                 ataqueCheckbox.checked = false;
                 defesaCheckbox.checked = false;
-            }
-            
-            // Se "Ataque" e "Defesa" forem selecionados juntos, marca "Ambos" e desmarca os outros
-            if (ataqueCheckbox.checked && defesaCheckbox.checked) {
-                ambosCheckbox.checked = true;
-                ataqueCheckbox.checked = false;
-                defesaCheckbox.checked = false;
+                ataqueDiv.classList.add('oculto');
+                defesaDiv.classList.add('oculto');
+            } else {
+                // Se "Ambos" for desmarcado, mostra os outros
+                ataqueDiv.classList.remove('oculto');
+                defesaDiv.classList.remove('oculto');
+
+                // Se "Ataque" e "Defesa" forem selecionados juntos, marca "Ambos" e oculta os outros
+                if (ataqueMarcado && defesaMarcada) {
+                    ambosCheckbox.checked = true;
+                    ataqueCheckbox.checked = false;
+                    defesaCheckbox.checked = false;
+                    ataqueDiv.classList.add('oculto');
+                    defesaDiv.classList.add('oculto');
+                }
             }
         }
         
