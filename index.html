@@ -81,9 +81,8 @@
             font-weight: 400;
         }
 
-        /* Estilo dos campos de entrada e do select */
-        input,
-        select {
+        /* Estilo dos campos de entrada */
+        input {
             width: 100%;
             padding: 12px;
             border: 2px solid #8E44AD; /* Borda roxa */
@@ -96,24 +95,8 @@
             font-family: 'Orbitron', sans-serif;
         }
         
-        select {
-             -webkit-appearance: none;
-            appearance: none;
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300FFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 0.65em auto;
-        }
-        
-        select:disabled {
-            background-color: rgba(0,0,0,0.2);
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-
-        /* Efeito de foco nos campos de entrada e no select */
-        input:focus,
-        select:focus {
+        /* Efeito de foco nos campos de entrada */
+        input:focus {
             outline: none;
             border-color: #00FFFF; /* Borda ciano ao focar */
             box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
@@ -154,8 +137,7 @@
             position: relative;
         }
         .checkbox-selector input[type="checkbox"] {
-            /* Esconde o checkbox real */
-            display: none;
+            display: none; /* Esconde o checkbox real */
         }
         .checkbox-selector label {
             display: block;
@@ -166,6 +148,7 @@
             margin-bottom: 0;
             transition: background-color 0.3s ease, border-color 0.3s ease;
             cursor: pointer;
+            text-align: center; /* Centraliza o texto do label */
         }
         .checkbox-selector label::before {
             content: '';
@@ -186,7 +169,7 @@
             top: 50%;
             transform: translateY(-50%) scale(0);
             font-size: 18px;
-            color: #00FFFF;
+            color: #000; /* Cor do 'check' para contrastar com o fundo ciano */
             transition: transform 0.2s ease;
         }
         .checkbox-selector input:checked + label {
@@ -205,8 +188,17 @@
         .posicao-selector {
             grid-template-columns: 1fr 1fr 1fr;
         }
+
+        /* --- NOVA CLASSE PARA O GRID DE HORÁRIOS --- */
+        .horario-grid {
+             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+             gap: 8px;
+        }
+        .horario-grid label {
+            padding: 10px; /* Remove o padding extra para o check */
+        }
         
-        /* Novo estilo para ocultar elementos */
+        /* Classe para ocultar elementos */
         .oculto {
             display: none !important;
         }
@@ -272,18 +264,10 @@
                 </div>
             </div>
 
-            <div class="form-group" id="horario-select-group">
-                <label for="horarioDisponivel">Horário Preferencial:</label>
-                <select id="horarioDisponivel" name="horarioDisponivel" required disabled>
-                    <option value="" disabled selected>Escolha um dia primeiro</option>
-                </select>
-            </div>
-
-            <div class="form-group checkbox-selector" style="grid-template-columns: 1fr;">
-                 <div>
-                    <input type="checkbox" id="horarioFlexivel" name="horarioFlexivel">
-                    <label for="horarioFlexivel">Sou flexível neste dia</label>
-                </div>
+            <div id="horarios-group" class="form-group oculto">
+                 <label>Marque os horários disponíveis:</label>
+                 <div id="horarios-sabado-container" class="checkbox-selector horario-grid oculto"></div>
+                 <div id="horarios-domingo-container" class="checkbox-selector horario-grid oculto"></div>
             </div>
             
             <div class="form-group">
@@ -337,13 +321,13 @@
     </div>
 
     <script>
+        // --- LÓGICA JAVASCRIPT ATUALIZADA ---
+
         // Elementos do DOM
         const form = document.getElementById('formInscricao');
         const introText = document.querySelector('.intro-text');
         const confirmationMessage = document.getElementById('mensagemConfirmacao');
-        const horarioFlexivelCheckbox = document.getElementById('horarioFlexivel');
         const diaRadios = document.querySelectorAll('input[name="dia"]');
-        const horarioSelect = document.getElementById('horarioDisponivel');
         
         // Novos elementos para as posições
         const ataqueCheckbox = document.getElementById('ataque');
@@ -353,40 +337,56 @@
         const defesaDiv = document.getElementById('defesa-div');
         const ambosDiv = document.getElementById('ambos-div');
 
-        // Gera a lista de horários
-        const horarios = [];
-        let hora = 14;
-        let minuto = 0;
-        while (hora < 24 || (hora === 24 && minuto === 0)) {
-            const horaFormatada = String(hora === 24 ? 0 : hora).padStart(2, '0');
-            const minutoFormatado = String(minuto).padStart(2, '0');
-            horarios.push(`${horaFormatada}:${minutoFormatado}`);
-            
-            minuto += 20;
-            if (minuto >= 60) {
-                hora++;
-                minuto -= 60;
-            }
-        }
+        // Novos elementos para os horários
+        const horariosGroup = document.getElementById('horarios-group');
+        const sabadoContainer = document.getElementById('horarios-sabado-container');
+        const domingoContainer = document.getElementById('horarios-domingo-container');
 
-        // Função para popular a caixa de seleção de horários
-        function popularHorarios(dia) {
-            horarioSelect.innerHTML = '<option value="" disabled selected>Selecione um horário</option>';
-            horarioSelect.disabled = false;
+        // --- DEFINE OS HORÁRIOS PARA CADA DIA ---
+        const horariosSabado = ['14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
+        const horariosDomingo = ['15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 
+        // Função para gerar os checkboxes de horário
+        function gerarCheckboxesDeHorario(container, horarios, dia) {
+            container.innerHTML = ''; // Limpa o container
             horarios.forEach(horario => {
-                const option = document.createElement('option');
-                option.value = `${dia} - ${horario}`;
-                option.textContent = horario;
-                horarioSelect.appendChild(option);
+                const id = `${dia}-${horario.replace(':', '')}`; // Cria um ID único, ex: Sabado-1400
+
+                const div = document.createElement('div');
+                
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.id = id;
+                input.name = 'horario';
+                input.value = horario;
+
+                const label = document.createElement('label');
+                label.htmlFor = id;
+                label.textContent = horario;
+
+                div.appendChild(input);
+                div.appendChild(label);
+                container.appendChild(div);
             });
         }
 
-        // Adiciona um listener para a mudança nos botões de rádio do dia
+        // Popula os containers de horário assim que a página carrega
+        gerarCheckboxesDeHorario(sabadoContainer, horariosSabado, 'sabado');
+        gerarCheckboxesDeHorario(domingoContainer, horariosDomingo, 'domingo');
+
+
+        // Listener para a mudança nos botões de rádio do dia
         diaRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.checked) {
-                    popularHorarios(this.value);
+                    horariosGroup.classList.remove('oculto'); // Mostra a seção de horários
+                    if (this.value === 'Sábado') {
+                        sabadoContainer.classList.remove('oculto');
+                        domingoContainer.classList.add('oculto');
+                    } else if (this.value === 'Domingo') {
+                        domingoContainer.classList.remove('oculto');
+                        sabadoContainer.classList.add('oculto');
+                    }
                 }
             });
         });
@@ -400,18 +400,14 @@
             const ataqueMarcado = ataqueCheckbox.checked;
             const defesaMarcada = defesaCheckbox.checked;
 
-            // Se "Ambos" for selecionado, oculta os outros
             if (ambosCheckbox.checked) {
                 ataqueCheckbox.checked = false;
                 defesaCheckbox.checked = false;
                 ataqueDiv.classList.add('oculto');
                 defesaDiv.classList.add('oculto');
             } else {
-                // Se "Ambos" for desmarcado, mostra os outros
                 ataqueDiv.classList.remove('oculto');
                 defesaDiv.classList.remove('oculto');
-
-                // Se "Ataque" e "Defesa" forem selecionados juntos, marca "Ambos" e oculta os outros
                 if (ataqueMarcado && defesaMarcada) {
                     ambosCheckbox.checked = true;
                     ataqueCheckbox.checked = false;
@@ -422,23 +418,28 @@
             }
         }
         
-        // Adiciona um listener para o evento de submit do formulário
+        // Listener para o evento de submit do formulário
         form.addEventListener('submit', function(event) {
             event.preventDefault(); 
 
             // Pega os valores dos campos do formulário
             const nomeCompleto = document.getElementById('nomeCompleto').value;
             const nickname = document.getElementById('nickname').value;
-            
-            let horarioFinal = horarioSelect.value;
-            if (horarioFlexivelCheckbox.checked) {
-                horarioFinal += " (Flexível)";
-            }
+            const diaSelecionado = document.querySelector('input[name="dia"]:checked').value;
+
+            // --- COLETA DOS HORÁRIOS MARCADOS ---
+            const horariosSelecionados = [];
+            const checkboxesHorario = document.querySelectorAll('input[name="horario"]:checked');
+            checkboxesHorario.forEach(checkbox => {
+                horariosSelecionados.push(checkbox.value);
+            });
+            const horariosString = horariosSelecionados.length > 0 ? horariosSelecionados.join(', ') : 'Nenhum horário marcado';
+
             
             // Coleta os modos de jogo selecionados
             const modosSelecionados = [];
-            const checkboxes = document.querySelectorAll('input[name="gamemode"]:checked');
-            checkboxes.forEach(checkbox => {
+            const checkboxesModo = document.querySelectorAll('input[name="gamemode"]:checked');
+            checkboxesModo.forEach(checkbox => {
                 modosSelecionados.push(checkbox.value);
             });
             const modosString = modosSelecionados.length > 0 ? modosSelecionados.join(', ') : 'Nenhum';
@@ -451,7 +452,6 @@
             });
             const posicoesString = posicoesSelecionadas.length > 0 ? posicoesSelecionadas.join(', ') : 'Não informou';
 
-
             // Número de telefone para o qual a mensagem será enviada
             const numeroWhatsApp = '5562981080384';
 
@@ -461,7 +461,8 @@
 
 *Nome:* ${nomeCompleto}
 *Nickname:* ${nickname}
-*Disponibilidade:* ${horarioFinal}
+*Dia Disponível:* ${diaSelecionado}
+*Horários:* ${horariosString}
 *Posição Preferida:* ${posicoesString}
 *Modos Preferidos:* ${modosString}
 
