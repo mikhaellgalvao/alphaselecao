@@ -82,7 +82,7 @@
         }
 
         /* Estilo dos campos de entrada */
-        input {
+        input[type="text"] {
             width: 100%;
             padding: 12px;
             border: 2px solid #8E44AD; /* Borda roxa */
@@ -96,19 +96,19 @@
         }
         
         /* Efeito de foco nos campos de entrada */
-        input:focus {
+        input[type="text"]:focus {
             outline: none;
             border-color: #00FFFF; /* Borda ciano ao focar */
             box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
         }
         
-        /* Estilização dos botões de rádio para dias */
+        /* Estilização dos checkboxes de dia */
         .day-selector {
             display: flex;
             gap: 10px;
         }
         .day-selector input {
-            display: none; /* Esconde o rádio padrão */
+            display: none; 
         }
         .day-selector label {
             flex: 1;
@@ -127,7 +127,7 @@
             color: #FFF;
         }
         
-        /* Estilização dos checkboxes */
+        /* Estilização GERAL dos checkboxes */
         .checkbox-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -137,7 +137,7 @@
             position: relative;
         }
         .checkbox-selector input[type="checkbox"] {
-            display: none; /* Esconde o checkbox real */
+            display: none; 
         }
         .checkbox-selector label {
             display: block;
@@ -148,7 +148,7 @@
             margin-bottom: 0;
             transition: background-color 0.3s ease, border-color 0.3s ease;
             cursor: pointer;
-            text-align: center; /* Centraliza o texto do label */
+            text-align: left;
         }
         .checkbox-selector label::before {
             content: '';
@@ -169,11 +169,10 @@
             top: 50%;
             transform: translateY(-50%) scale(0);
             font-size: 18px;
-            color: #000; /* Cor do 'check' para contrastar com o fundo ciano */
+            color: #000;
             transition: transform 0.2s ease;
         }
         .checkbox-selector input:checked + label {
-            background-color: rgba(142, 68, 173, 0.3);
             border-color: #00FFFF;
         }
         .checkbox-selector input:checked + label::before {
@@ -184,28 +183,45 @@
             transform: translateY(-50%) scale(1);
         }
         
-        /* Estilo para a caixa de posições que usa 3 colunas */
         .posicao-selector {
             grid-template-columns: 1fr 1fr 1fr;
         }
+        .posicao-selector label {
+            text-align: center;
+        }
 
-        /* --- NOVA CLASSE PARA O GRID DE HORÁRIOS --- */
+        /* --- ESTILOS ATUALIZADOS PARA OS HORÁRIOS --- */
         .horario-grid {
-             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+             /* Define 4 colunas de tamanho igual para garantir uniformidade */
+             grid-template-columns: repeat(4, 1fr);
              gap: 8px;
         }
         .horario-grid label {
-            padding: 10px; /* Remove o padding extra para o check */
+            padding: 10px; 
+            text-align: center;
+        }
+        .horario-grid label::before,
+        .horario-grid label::after {
+            display: none;
+        }
+        .horario-grid label .check {
+            display: inline-block;
+            transform: scale(0);
+            transition: transform 0.2s ease;
+            font-weight: bold;
+            color: #00FFFF;
+            margin-right: 4px;
+        }
+        .horario-grid input:checked + label .check {
+            transform: scale(1);
         }
         
-        /* Classe para ocultar elementos */
         .oculto {
             display: none !important;
         }
 
-        /* Estilo do botão de envio */
         button {
-            background: linear-gradient(45deg, #FF4500, #FF6347); /* Gradiente laranja/vermelho */
+            background: linear-gradient(45deg, #FF4500, #FF6347);
             color: #FFF;
             padding: 15px 30px;
             border: none;
@@ -222,17 +238,15 @@
             margin-top: 10px;
         }
 
-        /* Efeito hover no botão */
         button:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(255, 69, 0, 0.6);
         }
 
-        /* Mensagem de confirmação (inicialmente oculta) */
         #mensagemConfirmacao {
             margin-top: 25px;
             font-size: 1.2em;
-            color: #2ECC71; /* Verde para sucesso */
+            color: #2ECC71;
             display: none;
             font-weight: bold;
             line-height: 1.6;
@@ -255,19 +269,31 @@
             </div>
             
             <div class="form-group">
-                <label>Escolha o dia:</label>
+                <label>Escolha os dias disponíveis:</label>
                 <div class="day-selector">
-                    <input type="radio" id="sabado" name="dia" value="Sábado" required>
+                    <!-- --- ALTERADO DE RADIO PARA CHECKBOX --- -->
+                    <input type="checkbox" id="sabado" name="dia" value="Sábado">
                     <label for="sabado">Sábado</label>
-                    <input type="radio" id="domingo" name="dia" value="Domingo" required>
+                    <input type="checkbox" id="domingo" name="dia" value="Domingo">
                     <label for="domingo">Domingo</label>
                 </div>
             </div>
 
-            <div id="horarios-group" class="form-group oculto">
-                 <label>Marque os horários disponíveis:</label>
-                 <div id="horarios-sabado-container" class="checkbox-selector horario-grid oculto"></div>
-                 <div id="horarios-domingo-container" class="checkbox-selector horario-grid oculto"></div>
+            <!-- Container para os horários de Sábado -->
+            <div id="horarios-sabado-group" class="form-group oculto">
+                 <label>Horários de Sábado:</label>
+                 <div id="horarios-sabado-container" class="checkbox-selector horario-grid"></div>
+            </div>
+
+            <!-- Container para os horários de Domingo -->
+            <div id="horarios-domingo-group" class="form-group oculto">
+                 <label>Horários de Domingo:</label>
+                 <div id="horarios-domingo-container" class="checkbox-selector horario-grid"></div>
+            </div>
+            
+            <!-- Container para o campo "Outro horário", que só aparece se um dia for selecionado -->
+            <div id="outro-horario-group" class="form-group oculto" style="margin-bottom: 0;">
+                <input type="text" id="outroHorario" name="outroHorario" placeholder="Outro horário? Digite aqui (ex: 20:30)">
             </div>
             
             <div class="form-group">
@@ -291,26 +317,11 @@
             <div class="form-group">
                 <label>Modos de jogo preferidos:</label>
                 <div class="checkbox-selector">
-                    <div>
-                        <input type="checkbox" id="dupla" name="gamemode" value="Dupla">
-                        <label for="dupla">Dupla</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="duelo" name="gamemode" value="Duelo">
-                        <label for="duelo">Duelo</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="basquete" name="gamemode" value="Basquete">
-                        <label for="basquete">Basquete</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="volei" name="gamemode" value="Vôlei">
-                        <label for="volei">Vôlei</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="heatseeker" name="gamemode" value="Heatseeker">
-                        <label for="heatseeker">Heatseeker</label>
-                    </div>
+                    <div><input type="checkbox" id="dupla" name="gamemode" value="Dupla"><label for="dupla">Dupla</label></div>
+                    <div><input type="checkbox" id="duelo" name="gamemode" value="Duelo"><label for="duelo">Duelo</label></div>
+                    <div><input type="checkbox" id="basquete" name="gamemode" value="Basquete"><label for="basquete">Basquete</label></div>
+                    <div><input type="checkbox" id="volei" name="gamemode" value="Vôlei"><label for="volei">Vôlei</label></div>
+                    <div><input type="checkbox" id="heatseeker" name="gamemode" value="Heatseeker"><label for="heatseeker">Heatseeker</label></div>
                 </div>
             </div>
 
@@ -322,84 +333,63 @@
 
     <script>
         // --- LÓGICA JAVASCRIPT ATUALIZADA ---
-
-        // Elementos do DOM
         const form = document.getElementById('formInscricao');
         const introText = document.querySelector('.intro-text');
         const confirmationMessage = document.getElementById('mensagemConfirmacao');
-        const diaRadios = document.querySelectorAll('input[name="dia"]');
         
-        // Novos elementos para as posições
         const ataqueCheckbox = document.getElementById('ataque');
         const defesaCheckbox = document.getElementById('defesa');
         const ambosCheckbox = document.getElementById('ambos');
         const ataqueDiv = document.getElementById('ataque-div');
         const defesaDiv = document.getElementById('defesa-div');
-        const ambosDiv = document.getElementById('ambos-div');
 
-        // Novos elementos para os horários
-        const horariosGroup = document.getElementById('horarios-group');
+        // --- Lógica dos dias e horários ---
+        const sabadoCheckbox = document.getElementById('sabado');
+        const domingoCheckbox = document.getElementById('domingo');
+        const sabadoGroup = document.getElementById('horarios-sabado-group');
+        const domingoGroup = document.getElementById('horarios-domingo-group');
         const sabadoContainer = document.getElementById('horarios-sabado-container');
         const domingoContainer = document.getElementById('horarios-domingo-container');
+        const outroHorarioGroup = document.getElementById('outro-horario-group');
+        const outroHorarioInput = document.getElementById('outroHorario');
 
-        // --- DEFINE OS HORÁRIOS PARA CADA DIA ---
         const horariosSabado = ['14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
         const horariosDomingo = ['15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 
-        // Função para gerar os checkboxes de horário
         function gerarCheckboxesDeHorario(container, horarios, dia) {
-            container.innerHTML = ''; // Limpa o container
+            container.innerHTML = ''; 
             horarios.forEach(horario => {
-                const id = `${dia}-${horario.replace(':', '')}`; // Cria um ID único, ex: Sabado-1400
-
+                const id = `${dia}-${horario.replace(':', '')}`;
                 const div = document.createElement('div');
-                
                 const input = document.createElement('input');
                 input.type = 'checkbox';
                 input.id = id;
-                input.name = 'horario';
+                input.name = `horario-${dia}`;
                 input.value = horario;
-
                 const label = document.createElement('label');
                 label.htmlFor = id;
-                label.textContent = horario;
-
+                label.innerHTML = `<span class="check">✓</span>${horario}`;
                 div.appendChild(input);
                 div.appendChild(label);
                 container.appendChild(div);
             });
         }
 
-        // Popula os containers de horário assim que a página carrega
         gerarCheckboxesDeHorario(sabadoContainer, horariosSabado, 'sabado');
         gerarCheckboxesDeHorario(domingoContainer, horariosDomingo, 'domingo');
 
-
-        // Listener para a mudança nos botões de rádio do dia
-        diaRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.checked) {
-                    horariosGroup.classList.remove('oculto'); // Mostra a seção de horários
-                    if (this.value === 'Sábado') {
-                        sabadoContainer.classList.remove('oculto');
-                        domingoContainer.classList.add('oculto');
-                    } else if (this.value === 'Domingo') {
-                        domingoContainer.classList.remove('oculto');
-                        sabadoContainer.classList.add('oculto');
-                    }
-                }
-            });
-        });
-
-        // Adiciona um listener para as alterações nos checkboxes de posição
-        ataqueCheckbox.addEventListener('change', gerenciarPosicao);
-        defesaCheckbox.addEventListener('change', gerenciarPosicao);
-        ambosCheckbox.addEventListener('change', gerenciarPosicao);
+        // --- LÓGICA ATUALIZADA PARA MOSTRAR/ESCONDER HORÁRIOS ---
+        function atualizarVisibilidadeHorarios() {
+            sabadoGroup.classList.toggle('oculto', !sabadoCheckbox.checked);
+            domingoGroup.classList.toggle('oculto', !domingoCheckbox.checked);
+            
+            // Mostra o campo "outro horário" se pelo menos um dia estiver selecionado
+            outroHorarioGroup.classList.toggle('oculto', !sabadoCheckbox.checked && !domingoCheckbox.checked);
+        }
+        sabadoCheckbox.addEventListener('change', atualizarVisibilidadeHorarios);
+        domingoCheckbox.addEventListener('change', atualizarVisibilidadeHorarios);
 
         function gerenciarPosicao() {
-            const ataqueMarcado = ataqueCheckbox.checked;
-            const defesaMarcada = defesaCheckbox.checked;
-
             if (ambosCheckbox.checked) {
                 ataqueCheckbox.checked = false;
                 defesaCheckbox.checked = false;
@@ -408,7 +398,7 @@
             } else {
                 ataqueDiv.classList.remove('oculto');
                 defesaDiv.classList.remove('oculto');
-                if (ataqueMarcado && defesaMarcada) {
+                if (ataqueCheckbox.checked && defesaCheckbox.checked) {
                     ambosCheckbox.checked = true;
                     ataqueCheckbox.checked = false;
                     defesaCheckbox.checked = false;
@@ -417,77 +407,68 @@
                 }
             }
         }
+        ataqueCheckbox.addEventListener('change', gerenciarPosicao);
+        defesaCheckbox.addEventListener('change', gerenciarPosicao);
+        ambosCheckbox.addEventListener('change', gerenciarPosicao);
         
-        // Listener para o evento de submit do formulário
         form.addEventListener('submit', function(event) {
             event.preventDefault(); 
 
-            // Pega os valores dos campos do formulário
             const nomeCompleto = document.getElementById('nomeCompleto').value;
             const nickname = document.getElementById('nickname').value;
-            const diaSelecionado = document.querySelector('input[name="dia"]:checked').value;
 
-            // --- COLETA DOS HORÁRIOS MARCADOS ---
-            const horariosSelecionados = [];
-            const checkboxesHorario = document.querySelectorAll('input[name="horario"]:checked');
-            checkboxesHorario.forEach(checkbox => {
-                horariosSelecionados.push(checkbox.value);
-            });
-            const horariosString = horariosSelecionados.length > 0 ? horariosSelecionados.join(', ') : 'Nenhum horário marcado';
+            // --- COLETA ATUALIZADA DE DISPONIBILIDADE ---
+            let disponibilidadeString = '';
 
+            if (sabadoCheckbox.checked) {
+                const horariosSelecionados = [];
+                document.querySelectorAll('input[name="horario-sabado"]:checked').forEach(cb => horariosSelecionados.push(cb.value));
+                disponibilidadeString += `\n*Sábado:* ${horariosSelecionados.length > 0 ? horariosSelecionados.join(', ') : 'Nenhum horário marcado'}`;
+            }
+
+            if (domingoCheckbox.checked) {
+                const horariosSelecionados = [];
+                document.querySelectorAll('input[name="horario-domingo"]:checked').forEach(cb => horariosSelecionados.push(cb.value));
+                disponibilidadeString += `\n*Domingo:* ${horariosSelecionados.length > 0 ? horariosSelecionados.join(', ') : 'Nenhum horário marcado'}`;
+            }
             
-            // Coleta os modos de jogo selecionados
-            const modosSelecionados = [];
-            const checkboxesModo = document.querySelectorAll('input[name="gamemode"]:checked');
-            checkboxesModo.forEach(checkbox => {
-                modosSelecionados.push(checkbox.value);
-            });
-            const modosString = modosSelecionados.length > 0 ? modosSelecionados.join(', ') : 'Nenhum';
+            const outroHorarioValor = outroHorarioInput.value.trim();
+            if (outroHorarioValor) {
+                disponibilidadeString += `\n*Outro Horário:* ${outroHorarioValor}`;
+            }
 
-            // Coleta as posições selecionadas
-            const posicoesSelecionadas = [];
-            const checkboxesPosicao = document.querySelectorAll('input[name="posicao"]:checked');
-            checkboxesPosicao.forEach(checkbox => {
-                posicoesSelecionadas.push(checkbox.value);
-            });
-            const posicoesString = posicoesSelecionadas.length > 0 ? posicoesSelecionadas.join(', ') : 'Não informou';
+            if (disponibilidadeString === '') {
+                disponibilidadeString = '\nNenhuma disponibilidade informada.';
+            }
 
-            // Número de telefone para o qual a mensagem será enviada
+            const modosSelecionados = Array.from(document.querySelectorAll('input[name="gamemode"]:checked')).map(cb => cb.value);
+            const posicoesSelecionadas = Array.from(document.querySelectorAll('input[name="posicao"]:checked')).map(cb => cb.value);
+
             const numeroWhatsApp = '5562981080384';
 
-            // Formata a mensagem que será enviada
             const mensagem = `
 *-- TEMPORADA OMEGAVERSO - ALPHA --* 🚀
 
 *Nome:* ${nomeCompleto}
 *Nickname:* ${nickname}
-*Dia Disponível:* ${diaSelecionado}
-*Horários:* ${horariosString}
-*Posição Preferida:* ${posicoesString}
-*Modos Preferidos:* ${modosString}
+*Disponibilidade:*${disponibilidadeString}
+*Posição Preferida:* ${posicoesSelecionadas.length > 0 ? posicoesSelecionadas.join(', ') : 'Não informou'}
+*Modos Preferidos:* ${modosSelecionados.length > 0 ? modosSelecionados.join(', ') : 'Nenhum'}
 
 Pronto para a batalha! 🔥
-            `.trim();
+            `.trim().replace(/\n\s*\n/g, '\n');
 
-            // Codifica a mensagem para ser usada em uma URL
             const mensagemCodificada = encodeURIComponent(mensagem);
-
-            // Cria a URL do WhatsApp
             const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensagemCodificada}`;
 
-            // Esconde o formulário e o texto de introdução
             form.style.display = 'none';
             introText.style.display = 'none';
-
-            // Exibe a mensagem de confirmação final
             confirmationMessage.innerHTML = 'Inscrição confirmada com sucesso!<br>Boa sorte na arena! 🚀';
             confirmationMessage.style.display = 'block';
 
-            // Redireciona para o WhatsApp após um pequeno atraso
-            setTimeout(() => {
-                window.open(urlWhatsApp, '_blank');
-            }, 2000);
+            setTimeout(() => { window.open(urlWhatsApp, '_blank'); }, 2000);
         });
     </script>
 </body>
 </html>
+
